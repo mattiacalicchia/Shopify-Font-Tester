@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Shopify Font Tester – by Mattia Calicchia</title>
+
+  <style>
+    :root {
+      --bg: #f5f5f5;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #4b5563;
+      --link: #2563eb;
+      --border: #e5e7eb;
+      --warn-bg: #fff8e1;
+      --warn-border: #ffe0b2;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 1020px;
+      margin: 0 auto;
+      background: var(--card);
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      padding: 22px;
+    }
+
+    h1 {
+      margin: 0 0 6px 0;
+      font-size: 22px;
+    }
+
+    .meta {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 18px;
+      line-height: 1.45;
+    }
+
+    .meta a {
+      color: var(--link);
+      text-decoration: none;
+    }
+
+    .meta a:hover { text-decoration: underline; }
+
+    .disclaimer {
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-border);
+      padding: 14px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin: 14px 0 18px 0;
+      line-height: 1.45;
+    }
+
+    .description {
+      font-size: 14px;
+      color: var(--muted);
+      margin: 0 0 18px 0;
+      line-height: 1.55;
+    }
+
+    label {
+      display: block;
+      margin-top: 14px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    select, textarea, input[type="range"], input[type="color"] {
+      width: 100%;
+      margin-top: 8px;
+      box-sizing: border-box;
+      font-size: 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      background: #fff;
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+      font-size: 18px;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 6px;
+    }
+
+    .inline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .size-value {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .preview {
+      margin-top: 18px;
+      padding: 22px;
+      border: 1px solid var(--border);
+      background: #fafafa;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .status {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+      display: grid;
+      gap: 4px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .footer {
+      margin-top: 18px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Shopify Font Tester <span class="badge">by Mattia Calicchia</span></h1>
+
+    <div class="meta">
+      <strong>Theme reference:</strong>
+      <a href="https://themes.shopify.com/themes/madrid/presets/madrid" target="_blank" rel="noopener noreferrer">
+        Shopify — Madrid (preset)
+      </a>
+      <br>
+      <strong>LinkedIn:</strong>
+      <a href="https://www.linkedin.com/in/mattiacalicchia/" target="_blank" rel="noopener noreferrer">
+        https://www.linkedin.com/in/mattiacalicchia/
+      </a>
+    </div>
+
+    <div class="disclaimer">
+      <strong>Font accessibility best practices</strong><br>
+      • Use highly legible fonts with regular weight for body text<br>
+      • Recommended minimum size: 16px on web<br>
+      • Ensure sufficient contrast between text and background<br>
+      • Avoid decorative fonts for long-form content<br>
+      • Email clients support only a limited set of fonts — always define safe fallbacks<br><br>
+      Learn more:
+      <a href="https://webaim.org/techniques/fonts/" target="_blank" rel="noopener noreferrer">
+        WebAIM — Fonts and Accessibility
+      </a>
+    </div>
+
+    <div class="description">
+      <strong>Common font</strong>: fonts shared and used across the entire website.<br>
+      <strong>Theme font</strong>: fonts available only within the website theme.<br>
+      <strong>Mail font</strong>: fonts supported by major email clients (Outlook, Gmail, Apple Mail).<br>
+      <em>Priority order:</em> Mail font → Theme font → Common font.
+    </div>
+
+    <!-- COMMON FONT -->
+    <label for="commonFont">Common font</label>
+    <select id="commonFont"></select>
+
+    <!-- THEME FONT -->
+    <label for="themeFont">Theme font</label>
+    <select id="themeFont"></select>
+
+    <!-- MAIL FONT -->
+    <label for="mailFont">Mail font</label>
+    <select id="mailFont"></select>
+
+    <div class="controls">
+      <div>
+        <div class="inline">
+          <label for="fontSize" style="margin:0;">Font size</label>
+          <span id="fontSizeValue" class="size-value">20px</span>
+        </div>
+        <input type="range" id="fontSize" min="12" max="64" value="20" />
+      </div>
+
+      <div>
+        <label for="fontColor" style="margin:0;">Text color</label>
+        <input type="color" id="fontColor" value="#000000" />
+      </div>
+    </div>
+
+    <label for="textInput">Sample text</label>
+    <textarea id="textInput">The quick brown fox jumps over the lazy dog.
+0123456789
+Aa Bb Cc — Typography test
+</textarea>
+
+    <div id="preview" class="preview"></div>
+
+    <div class="status">
+      <div><strong>Applied source:</strong> <span id="appliedSource" class="badge">—</span></div>
+      <div><strong>Applied CSS font-family:</strong> <span id="appliedFontFamily"></span></div>
+    </div>
+
+    <div class="footer">
+      Tip: if a font is not available on your system/theme, the browser will fall back to the next available font.
+    </div>
+  </div>
+
+  <script>
+    // ---------- Lists (updated exactly as requested) ----------
+
+    // COMMON FONT (exact list)
+    const COMMON_FONTS = [
+      "Courier New",
+      "Garamond",
+      "Lucida Grande",
+      "Monaco",          // previously shown as “Monaco / Lucida Console”
+      "Palatino",
+      "Sans-serif",
+      "Times New Roman",
+      "Trebuchet MS"
+    ];
+
+    // MAIL FONT (exact list)
+    const MAIL_FONTS = [
+      "Baskerville",
+      "Courier New",
+      "Futura",
+      "Garamond",
+      "Georgia",
+      "Gill Sans",
+      "Impact",
+      "Lucida Grande",
+      "Monaco",
+      "Palatino",
+      "Rockwell",
+      "Sans-serif",
+      "Segoe UI",
+      "System Font",
+      "Tahoma",
+      "Times New Roman",
+      "Trebuchet MS",
+      "Verdana"
+    ];
+
+    // THEME FONT (exact list)
+    const THEME_FONTS = [
+      "Predefinito",
+      "Mono",
+      "Sans-serif",
+      "Serif",
+      "System UI",
+      "Abel",
+      "Abril Fatface",
+      "Acme",
+      "Alegreya",
+      "Alegreya Sans",
+      "Aleo",
+      "Almarai",
+      "Amiri",
+      "Andada Pro",
+      "Anek Tamil",
+      "Anonymous Pro",
+      "Anton",
+      "Anybody",
+      "Arapey",
+      "Archivo",
+      "Archivo Black",
+      "Archivo Narrow",
+      "Arial",
+      "Arimo",
+      "Arsenal",
+      "Arvo",
+      "Asap",
+      "Assistant",
+      "Asul",
+      "Azeret Mono",
+      "Bagel Fat One",
+      "Barlow",
+      "Barlow Condensed",
+      "Barlow Semi Condensed",
+      "Baskervville",
+      "Bayon",
+      "Bebas Neue",
+      "Besley",
+      "Bevan",
+      "Big Shoulders",
+      "Bitter",
+      "Bodoni Moda",
+      "Bricolage Grotesque",
+      "Buenard",
+      "Bungee",
+      "Cabin",
+      "Caprasimo",
+      "Cardo",
+      "Carlito",
+      "Catamaran",
+      "Caveat",
+      "Cedarville Cursive",
+      "Chakra Petch",
+      "Chivo",
+      "Climate Crisis",
+      "Comfortaa",
+      "Cormorant",
+      "Courier New",
+      "Covered By Your Grace",
+      "Crimson Pro",
+      "Crimson Text",
+      "DM Sans",
+      "DM Serif Display",
+      "DM Serif Text",
+      "Domine",
+      "Dosis",
+      "EB Garamond",
+      "Eczar",
+      "Epilogue",
+      "Faculty Glyphic",
+      "Fahkwang",
+      "Figtree",
+      "Fira Sans",
+      "Fjalla One",
+      "Francois One",
+      "Frank Ruhl Libre",
+      "Fraunces",
+      "Fredoka",
+      "Funnel Display",
+      "Funnel Sans",
+      "Fustat",
+      "Garamond",
+      "Geist",
+      "Geist Mono",
+      "Gelasio",
+      "Germania One",
+      "Gilda Display",
+      "Gloock",
+      "Gluten",
+      "Gowun Batang",
+      "Grandstander",
+      "Halant",
+      "Handlee",
+      "Hepta Slab",
+      "Host Grotesk",
+      "Hubot Sans",
+      "IBM Plex Mono",
+      "IBM Plex Sans",
+      "IBM Plex Sans Condensed",
+      "IBM Plex Serif",
+      "Imbue",
+      "Inconsolata",
+      "Inknut Antiqua",
+      "Instrument Sans",
+      "Instrument Serif",
+      "Inter",
+      "Josefin Sans",
+      "Josefin Slab",
+      "Jost",
+      "Kalam",
+      "Karla",
+      "Kaushan Script",
+      "Klee One",
+      "Kreon",
+      "Krona One",
+      "Krub",
+      "Lato",
+      "Lexend Zetta",
+      "Libre Baskerville",
+      "Libre Bodoni",
+      "Libre Caslon Text",
+      "Libre Franklin",
+      "Liter",
+      "Lobster Two",
+      "Lora",
+      "Lucida Grande",
+      "Manrope",
+      "Manuale",
+      "Marcellus",
+      "Martel",
+      "Maven Pro",
+      "Merriweather",
+      "Merriweather Sans",
+      "Michroma",
+      "Modak",
+      "Mona Sans",
+      "Monaco / Lucida Console",
+      "Montagu Slab",
+      "Montserrat",
+      "Muli",
+      "Nanum Myeongjo",
+      "Nanum Pen Script",
+      "Neuton",
+      "Newsreader",
+      "Nobile",
+      "Nothing You Could Do",
+      "Noto Sans",
+      "Noto Sans Display",
+      "Noto Serif",
+      "Nunito",
+      "Nunito Sans",
+      "Old Standard TT",
+      "Open Sans",
+      "Open Sans Condensed",
+      "Oranienbaum",
+      "Oswald",
+      "Outfit",
+      "Ovo",
+      "Pacifico",
+      "Palatino",
+      "Passion One",
+      "Petrona",
+      "Pinyon Script",
+      "Plaster",
+      "Platypi",
+      "Playball",
+      "Playfair",
+      "Playfair Display",
+      "Playpen Sans",
+      "Playwrite CA",
+      "Plus Jakarta Sans",
+      "Poetsen One",
+      "Poppins",
+      "Prompt",
+      "Protest Riot",
+      "Proza Libre",
+      "PT Sans",
+      "PT Serif",
+      "Quantico",
+      "Quattrocento Sans",
+      "Questrial",
+      "Quicksand",
+      "Radio Canada Big",
+      "Rajdhani",
+      "Raleway",
+      "Rancho",
+      "Rasa",
+      "Recursive",
+      "Red Hat Display",
+      "Red Hat Text",
+      "Red Rose",
+      "Rethink Sans",
+      "Roboto",
+      "Roboto Condensed",
+      "Roboto Mono",
+      "Roboto Serif",
+      "Roboto Slab",
+      "Rock Salt",
+      "Rokkitt",
+      "Rubik",
+      "Saira",
+      "Saira Condensed",
+      "Saira Extra Condensed",
+      "Saira Semi Condensed",
+      "Sarabun",
+      "Schibsted Grotesk",
+      "Sedgwick Ave",
+      "Shadows Into Light",
+      "Shadows Into Light Two",
+      "Shantell Sans",
+      "Shippori Antique",
+      "Smooch",
+      "Sofia Sans",
+      "Sofia Sans Condensed",
+      "Sofia Sans Extra Condensed",
+      "Sofia Sans Semi Condensed",
+      "Sono",
+      "Sour Gummy",
+      "Source Code Pro",
+      "Source Sans Pro",
+      "Source Serif 4",
+      "Space Grotesk",
+      "Space Mono",
+      "Syne",
+      "Taviraj",
+      "Tenor Sans",
+      "Tilt Warp",
+      "Times New Roman",
+      "Titan One",
+      "Titillium Web",
+      "Tomorrow",
+      "Trebuchet MS",
+      "Trirong",
+      "Trispace",
+      "Ubuntu",
+      "Unbounded",
+      "Unica One",
+      "UnifrakturCook Bold",
+      "UnifrakturMaguntia",
+      "Urbanist",
+      "Vina Sans",
+      "Work Sans",
+      "Young Serif",
+      "Yrsa",
+      "Zilla Slab",
+      "BIZ UDPMincho",
+      "Dela Gothic One",
+      "Hina Mincho",
+      "Kaisei Decol",
+      "Kaisei Opti",
+      "Kaisei Tokumin",
+      "M PLUS 1",
+      "M PLUS Rounded 1c",
+      "Mochiy Pop P One",
+      "Murecho",
+      "Noto Sans Japanese",
+      "Noto Serif Japanese",
+      "Shippori Mincho",
+      "Zen Kaku Gothic New",
+      "Zen Kurenaido",
+      "Zen Maru Gothic",
+      "Zen Old Mincho"
+    ];
+
+    // ---------- Mapping font names to CSS font-family values ----------
+    // Goal: make selectors always "work" (even when fonts are missing) by providing valid CSS values and sensible fallbacks.
+    function cssFontFamily(name) {
+      const n = name.trim();
+
+      // Special labels / categories
+      if (n === "Predefinito") return "";             // default (no override)
+      if (n === "Mono") return "monospace";
+      if (n === "Sans-serif") return "sans-serif";
+      if (n === "Serif") return "serif";
+      if (n === "System UI" || n === "System Font") return "system-ui";
+
+      // Monaco variants
+      if (n === "Monaco") return "Monaco, 'Lucida Console', monospace";
+      if (n === "Monaco / Lucida Console") return "Monaco, 'Lucida Console', monospace";
+
+      // Generic: quoted font family + reasonable fallback
+      // Heuristic fallbacks: serif for some known serif families, monospace for known mono families, else sans-serif
+      const serifHint = /(Garamond|Palatino|Baskerville|Baskervville|Georgia|Times|Bodoni|Crimson|Gelasio|Libre Bodoni|Libre Baskerville|Old Standard TT|Newsreader|Domine|EB Garamond|Cormorant|Lora|Yrsa|Zilla Slab|Source Serif|PT Serif|Roboto Serif)/i;
+      const monoHint  = /(Courier|Mono|Inconsolata|IBM Plex Mono|Source Code Pro|Space Mono|Roboto Mono|Azeret Mono|Geist Mono|Trispace)/i;
+
+      const fallback = monoHint.test(n) ? "monospace" : (serifHint.test(n) ? "serif" : "sans-serif");
+      // Quote font names with spaces/special chars
+      const quoted = /[ \/-]/.test(n) ? `'${n.replace(/'/g, "\\'")}'` : n;
+      return `${quoted}, ${fallback}`;
+    }
+
+    // ---------- DOM ----------
+    const commonFontEl = document.getElementById("commonFont");
+    const themeFontEl  = document.getElementById("themeFont");
+    const mailFontEl   = document.getElementById("mailFont");
+
+    const fontSizeEl = document.getElementById("fontSize");
+    const fontSizeValueEl = document.getElementById("fontSizeValue");
+    const fontColorEl = document.getElementById("fontColor");
+    const textInputEl = document.getElementById("textInput");
+
+    const previewEl = document.getElementById("preview");
+    const appliedSourceEl = document.getElementById("appliedSource");
+    const appliedFontFamilyEl = document.getElementById("appliedFontFamily");
+
+    function fillSelect(selectEl, items, { allowNoneLabel } = {}) {
+      selectEl.innerHTML = "";
+
+      if (allowNoneLabel) {
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = allowNoneLabel;
+        selectEl.appendChild(opt);
+      }
+
+      items.forEach(name => {
+        const opt = document.createElement("option");
+        opt.value = cssFontFamily(name);
+        opt.textContent = name; // keep label exactly as provided
+        selectEl.appendChild(opt);
+      });
+    }
+
+    // Populate selects
+    fillSelect(commonFontEl, COMMON_FONTS);
+    fillSelect(themeFontEl, THEME_FONTS, { allowNoneLabel: "— None (use Common) —" });
+    fillSelect(mailFontEl, MAIL_FONTS,  { allowNoneLabel: "— None (use Theme/Common) —" });
+
+    // Default selection: Common first item, Theme none, Mail none
+    commonFontEl.selectedIndex = 0;
+    themeFontEl.value = ""; // none
+    mailFontEl.value = "";  // none
+
+    function updatePreview() {
+      const mailVal = mailFontEl.value;
+      const themeVal = themeFontEl.value;
+      const commonVal = commonFontEl.value;
+
+      let fontFamily = commonVal;
+      let source = "Common font";
+
+      if (themeVal) {
+        fontFamily = themeVal;
+        source = "Theme font";
+      }
+      if (mailVal) {
+        fontFamily = mailVal;
+        source = "Mail font";
+      }
+
+      // Apply
+      previewEl.style.fontFamily = fontFamily || "";
+      previewEl.style.fontSize = `${fontSizeEl.value}px`;
+      previewEl.style.color = fontColorEl.value;
+      previewEl.textContent = textInputEl.value;
+
+      fontSizeValueEl.textContent = `${fontSizeEl.value}px`;
+      appliedSourceEl.textContent = source;
+
+      // Show computed family (helps understand fallbacks)
+      const computed = getComputedStyle(previewEl).fontFamily;
+      appliedFontFamilyEl.textContent = computed;
+    }
+
+    [commonFontEl, themeFontEl, mailFontEl, fontSizeEl, fontColorEl, textInputEl]
+      .forEach(el => el.addEventListener("input", updatePreview));
+
+    updatePreview();
+  </script>
+</body>
+</html>
