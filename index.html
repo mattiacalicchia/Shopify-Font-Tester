@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Shopify Font Tester – by Mattia Calicchia</title>
 
+  <!-- Preconnect for Google Fonts performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <style>
     body {
       margin: 0;
@@ -40,6 +44,7 @@
       color: #2563eb;
       text-decoration: none;
     }
+    .meta a:hover { text-decoration: underline; }
 
     .disclaimer {
       background: #fff8e1;
@@ -48,6 +53,7 @@
       padding: 14px;
       margin-bottom: 18px;
       font-size: 14px;
+      line-height: 1.5;
     }
 
     label {
@@ -96,6 +102,7 @@
       margin-top: 12px;
       font-size: 13px;
       color: #4b5563;
+      line-height: 1.45;
     }
 
     .badge {
@@ -107,6 +114,9 @@
       font-weight: 600;
       background: #ffffff;
     }
+
+    .ok { color: #166534; }
+    .warn { color: #92400e; }
   </style>
 </head>
 
@@ -116,13 +126,9 @@
 
     <div class="meta">
       Theme reference:
-      <a href="https://themes.shopify.com/themes/madrid/presets/madrid" target="_blank">
-        Shopify Madrid
-      </a><br>
+      <a href="https://themes.shopify.com/themes/madrid/presets/madrid" target="_blank" rel="noopener">Shopify Madrid</a><br>
       LinkedIn:
-      <a href="https://www.linkedin.com/in/mattiacalicchia/" target="_blank">
-        mattiacalicchia
-      </a>
+      <a href="https://www.linkedin.com/in/mattiacalicchia/" target="_blank" rel="noopener">mattiacalicchia</a>
     </div>
 
     <div class="disclaimer">
@@ -133,16 +139,14 @@
       • Avoid decorative fonts for long-form content<br>
       • Email clients support a limited set of fonts<br><br>
       Read more:
-      <a href="https://webaim.org/techniques/fonts/" target="_blank">
-        WebAIM – Fonts and Accessibility
-      </a>
+      <a href="https://webaim.org/techniques/fonts/" target="_blank" rel="noopener">WebAIM – Fonts and Accessibility</a>
     </div>
 
     <div class="description">
       <strong>Common font</strong>: fonts shared across the entire website.<br>
       <strong>Theme font</strong>: fonts available only on the website theme.<br>
       <strong>Mail font</strong>: fonts supported by major email clients.<br>
-      <em>Only one font group can be active at a time.</em>
+      <em>When you select one dropdown, the other two are reset (one active group at a time).</em>
     </div>
 
     <!-- SELECTS -->
@@ -175,110 +179,511 @@ Typography test</textarea>
 
     <div class="status">
       Active source: <span id="activeSource" class="badge"></span><br>
-      Computed font-family: <span id="appliedFont"></span>
+      Selected font label: <span id="selectedLabel"></span><br>
+      Applied CSS font-family: <span id="appliedFont"></span><br>
+      Font loading status: <span id="fontLoadStatus"></span>
     </div>
   </div>
 
 <script>
-/* -------- FONT LISTS (unchanged) -------- */
+/* ---------------- FONT LISTS (exactly as provided) ---------------- */
 
 const COMMON_FONTS = [
-  "Courier New","Garamond","Lucida Grande","Monaco",
-  "Palatino","Sans-serif","Times New Roman","Trebuchet MS"
+  "Courier New",
+  "Garamond",
+  "Lucida Grande",
+  "Monaco",
+  "Palatino",
+  "Sans-serif",
+  "Times New Roman",
+  "Trebuchet MS"
 ];
 
 const MAIL_FONTS = [
-  "Baskerville","Courier New","Futura","Garamond","Georgia","Gill Sans",
-  "Impact","Lucida Grande","Monaco","Palatino","Rockwell","Sans-serif",
-  "Segoe UI","System Font","Tahoma","Times New Roman","Trebuchet MS","Verdana"
+  "Baskerville",
+  "Courier New",
+  "Futura",
+  "Garamond",
+  "Georgia",
+  "Gill Sans",
+  "Impact",
+  "Lucida Grande",
+  "Monaco",
+  "Palatino",
+  "Rockwell",
+  "Sans-serif",
+  "Segoe UI",
+  "System Font",
+  "Tahoma",
+  "Times New Roman",
+  "Trebuchet MS",
+  "Verdana"
 ];
 
 const THEME_FONTS = [
-  "Predefinito","Mono","Sans-serif","Serif","System UI",
-  "Abel","Abril Fatface","Acme","Alegreya","Alegreya Sans","Aleo",
-  "Anton","Archivo","Arial","Inter","Lato","Montserrat","Open Sans","Roboto",
-  "Work Sans","Zilla Slab"
+  "Predefinito",
+  "Mono",
+  "Sans-serif",
+  "Serif",
+  "System UI",
+  "Abel",
+  "Abril Fatface",
+  "Acme",
+  "Alegreya",
+  "Alegreya Sans",
+  "Aleo",
+  "Almarai",
+  "Amiri",
+  "Andada Pro",
+  "Anek Tamil",
+  "Anonymous Pro",
+  "Anton",
+  "Anybody",
+  "Arapey",
+  "Archivo",
+  "Archivo Black",
+  "Archivo Narrow",
+  "Arial",
+  "Arimo",
+  "Arsenal",
+  "Arvo",
+  "Asap",
+  "Assistant",
+  "Asul",
+  "Azeret Mono",
+  "Bagel Fat One",
+  "Barlow",
+  "Barlow Condensed",
+  "Barlow Semi Condensed",
+  "Baskervville",
+  "Bayon",
+  "Bebas Neue",
+  "Besley",
+  "Bevan",
+  "Big Shoulders",
+  "Bitter",
+  "Bodoni Moda",
+  "Bricolage Grotesque",
+  "Buenard",
+  "Bungee",
+  "Cabin",
+  "Caprasimo",
+  "Cardo",
+  "Carlito",
+  "Catamaran",
+  "Caveat",
+  "Cedarville Cursive",
+  "Chakra Petch",
+  "Chivo",
+  "Climate Crisis",
+  "Comfortaa",
+  "Cormorant",
+  "Courier New",
+  "Covered By Your Grace",
+  "Crimson Pro",
+  "Crimson Text",
+  "DM Sans",
+  "DM Serif Display",
+  "DM Serif Text",
+  "Domine",
+  "Dosis",
+  "EB Garamond",
+  "Eczar",
+  "Epilogue",
+  "Faculty Glyphic",
+  "Fahkwang",
+  "Figtree",
+  "Fira Sans",
+  "Fjalla One",
+  "Francois One",
+  "Frank Ruhl Libre",
+  "Fraunces",
+  "Fredoka",
+  "Funnel Display",
+  "Funnel Sans",
+  "Fustat",
+  "Garamond",
+  "Geist",
+  "Geist Mono",
+  "Gelasio",
+  "Germania One",
+  "Gilda Display",
+  "Gloock",
+  "Gluten",
+  "Gowun Batang",
+  "Grandstander",
+  "Halant",
+  "Handlee",
+  "Hepta Slab",
+  "Host Grotesk",
+  "Hubot Sans",
+  "IBM Plex Mono",
+  "IBM Plex Sans",
+  "IBM Plex Sans Condensed",
+  "IBM Plex Serif",
+  "Imbue",
+  "Inconsolata",
+  "Inknut Antiqua",
+  "Instrument Sans",
+  "Instrument Serif",
+  "Inter",
+  "Josefin Sans",
+  "Josefin Slab",
+  "Jost",
+  "Kalam",
+  "Karla",
+  "Kaushan Script",
+  "Klee One",
+  "Kreon",
+  "Krona One",
+  "Krub",
+  "Lato",
+  "Lexend Zetta",
+  "Libre Baskerville",
+  "Libre Bodoni",
+  "Libre Caslon Text",
+  "Libre Franklin",
+  "Liter",
+  "Lobster Two",
+  "Lora",
+  "Lucida Grande",
+  "Manrope",
+  "Manuale",
+  "Marcellus",
+  "Martel",
+  "Maven Pro",
+  "Merriweather",
+  "Merriweather Sans",
+  "Michroma",
+  "Modak",
+  "Mona Sans",
+  "Monaco / Lucida Console",
+  "Montagu Slab",
+  "Montserrat",
+  "Muli",
+  "Nanum Myeongjo",
+  "Nanum Pen Script",
+  "Neuton",
+  "Newsreader",
+  "Nobile",
+  "Nothing You Could Do",
+  "Noto Sans",
+  "Noto Sans Display",
+  "Noto Serif",
+  "Nunito",
+  "Nunito Sans",
+  "Old Standard TT",
+  "Open Sans",
+  "Open Sans Condensed",
+  "Oranienbaum",
+  "Oswald",
+  "Outfit",
+  "Ovo",
+  "Pacifico",
+  "Palatino",
+  "Passion One",
+  "Petrona",
+  "Pinyon Script",
+  "Plaster",
+  "Platypi",
+  "Playball",
+  "Playfair",
+  "Playfair Display",
+  "Playpen Sans",
+  "Playwrite CA",
+  "Plus Jakarta Sans",
+  "Poetsen One",
+  "Poppins",
+  "Prompt",
+  "Protest Riot",
+  "Proza Libre",
+  "PT Sans",
+  "PT Serif",
+  "Quantico",
+  "Quattrocento Sans",
+  "Questrial",
+  "Quicksand",
+  "Radio Canada Big",
+  "Rajdhani",
+  "Raleway",
+  "Rancho",
+  "Rasa",
+  "Recursive",
+  "Red Hat Display",
+  "Red Hat Text",
+  "Red Rose",
+  "Rethink Sans",
+  "Roboto",
+  "Roboto Condensed",
+  "Roboto Mono",
+  "Roboto Serif",
+  "Roboto Slab",
+  "Rock Salt",
+  "Rokkitt",
+  "Rubik",
+  "Saira",
+  "Saira Condensed",
+  "Saira Extra Condensed",
+  "Saira Semi Condensed",
+  "Sarabun",
+  "Schibsted Grotesk",
+  "Sedgwick Ave",
+  "Shadows Into Light",
+  "Shadows Into Light Two",
+  "Shantell Sans",
+  "Shippori Antique",
+  "Smooch",
+  "Sofia Sans",
+  "Sofia Sans Condensed",
+  "Sofia Sans Extra Condensed",
+  "Sofia Sans Semi Condensed",
+  "Sono",
+  "Sour Gummy",
+  "Source Code Pro",
+  "Source Sans Pro",
+  "Source Serif 4",
+  "Space Grotesk",
+  "Space Mono",
+  "Syne",
+  "Taviraj",
+  "Tenor Sans",
+  "Tilt Warp",
+  "Times New Roman",
+  "Titan One",
+  "Titillium Web",
+  "Tomorrow",
+  "Trebuchet MS",
+  "Trirong",
+  "Trispace",
+  "Ubuntu",
+  "Unbounded",
+  "Unica One",
+  "UnifrakturCook Bold",
+  "UnifrakturMaguntia",
+  "Urbanist",
+  "Vina Sans",
+  "Work Sans",
+  "Young Serif",
+  "Yrsa",
+  "Zilla Slab",
+  "BIZ UDPMincho",
+  "Dela Gothic One",
+  "Hina Mincho",
+  "Kaisei Decol",
+  "Kaisei Opti",
+  "Kaisei Tokumin",
+  "M PLUS 1",
+  "M PLUS Rounded 1c",
+  "Mochiy Pop P One",
+  "Murecho",
+  "Noto Sans Japanese",
+  "Noto Serif Japanese",
+  "Shippori Mincho",
+  "Zen Kaku Gothic New",
+  "Zen Kurenaido",
+  "Zen Maru Gothic",
+  "Zen Old Mincho"
 ];
 
-/* -------- HELPERS -------- */
+/* ---------------- Font loading strategy ----------------
+   We load open fonts from Google Fonts CSS2 on-demand.
+   (API endpoint: https://fonts.googleapis.com/css2)  */
+/* ------------------------------------------------------ */
 
-function cssFont(name){
-  if(name === "Predefinito") return "";
-  if(name === "Mono") return "monospace";
-  if(name === "Sans-serif") return "sans-serif";
-  if(name === "Serif") return "serif";
-  if(name === "System UI" || name === "System Font") return "system-ui";
-  if(name === "Monaco") return "Monaco,'Lucida Console',monospace";
-  return `'${name}', sans-serif`;
+// Fonts that are typically proprietary / not reliably available as free webfonts.
+// For these, we won't try Google Fonts; we rely on system availability or fallback.
+const NON_GOOGLE_WEBFONTS = new Set([
+  "Segoe UI",
+  "Futura",
+  "Gill Sans",
+  "Rockwell",
+  "Impact",
+  "Tahoma",
+  "Times New Roman",
+  "Courier New",
+  "Garamond",
+  "Palatino",
+  "Lucida Grande",
+  "Monaco",
+  "Verdana",
+  "Arial",
+  "System Font",
+  "System UI",
+  "Sans-serif",
+  "Serif",
+  "Mono",
+  "Predefinito",
+  "Monaco / Lucida Console",
+  "Georgia",
+  "Baskerville" // we’ll map to Libre Baskerville for loading
+]);
+
+// For labels that should load a different Google Fonts family (web-safe substitute)
+const GOOGLE_LOAD_OVERRIDES = {
+  // “Baskerville” isn’t on Google Fonts as-is; Libre Baskerville is a close open alternative.
+  "Baskerville": "Libre Baskerville"
+};
+
+// Track loaded families to avoid duplicate requests
+const loadedFamilies = new Set();
+
+function familyToGoogleParam(familyName) {
+  // CSS2 family param uses '+' for spaces
+  return familyName.trim().replace(/\s+/g, "+");
 }
 
-function fillSelect(el, list){
-  el.innerHTML = `<option value="">— None —</option>`;
-  list.forEach(f=>{
-    const o = document.createElement("option");
-    o.value = cssFont(f);
-    o.textContent = f;
-    el.appendChild(o);
-  });
+async function ensureGoogleFontLoaded(labelName) {
+  const statusEl = document.getElementById("fontLoadStatus");
+
+  const targetFamily = GOOGLE_LOAD_OVERRIDES[labelName] || labelName;
+
+  // Skip non-webfonts / system fonts
+  if (NON_GOOGLE_WEBFONTS.has(labelName) && !GOOGLE_LOAD_OVERRIDES[labelName]) {
+    statusEl.innerHTML = `<span class="warn">Not loaded externally (system/proprietary font). If installed locally it will render; otherwise fallback applies.</span>`;
+    return;
+  }
+
+  // Don't re-load
+  if (loadedFamilies.has(targetFamily)) {
+    statusEl.innerHTML = `<span class="ok">Loaded from Google Fonts (cached).</span>`;
+    return;
+  }
+
+  // Build Google Fonts CSS2 URL (display=swap recommended)
+  const url = `https://fonts.googleapis.com/css2?family=${familyToGoogleParam(targetFamily)}&display=swap`;
+
+  try {
+    // Fetch CSS first to verify it exists (some families may 400 if not present)
+    const res = await fetch(url, { mode: "cors" });
+    if (!res.ok) {
+      statusEl.innerHTML = `<span class="warn">Could not load from Google Fonts (family not found). Using fallback/system if available.</span>`;
+      return;
+    }
+
+    // Inject stylesheet
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = url;
+    link.dataset.family = targetFamily;
+    document.head.appendChild(link);
+
+    loadedFamilies.add(targetFamily);
+    statusEl.innerHTML = `<span class="ok">Loaded from Google Fonts.</span>`;
+  } catch (e) {
+    statusEl.innerHTML = `<span class="warn">Font load failed (network/CORS). Using fallback/system if available.</span>`;
+  }
 }
 
-/* -------- INIT -------- */
+/* ---------------- CSS font-family mapping ---------------- */
+
+function cssFontStack(label) {
+  const name = label.trim();
+
+  if (name === "Predefinito") return "";
+  if (name === "Mono") return "monospace";
+  if (name === "Sans-serif") return "sans-serif";
+  if (name === "Serif") return "serif";
+  if (name === "System UI" || name === "System Font") return "system-ui";
+
+  if (name === "Monaco") return "Monaco, 'Lucida Console', monospace";
+  if (name === "Monaco / Lucida Console") return "Monaco, 'Lucida Console', monospace";
+
+  // Special: Baskerville label -> prefer Baskerville if installed, else use loaded Libre Baskerville
+  if (name === "Baskerville") return "Baskerville, 'Libre Baskerville', serif";
+
+  // Generic: quote font names with spaces/symbols and add safe fallback
+  const needsQuotes = /[ \/-]/.test(name);
+  const quoted = needsQuotes ? `'${name.replace(/'/g, "\\'")}'` : name;
+
+  // Lightweight heuristic: serif-like names fall back to serif, else sans-serif
+  const serifHint = /(Garamond|Palatino|Georgia|Times|Bodoni|Crimson|Gelasio|Libre Baskerville|Old Standard|Newsreader|Domine|EB Garamond|Cormorant|Lora|Yrsa|Zilla Slab|Source Serif|PT Serif)/i;
+  const monoHint  = /(Courier|Mono|Inconsolata|IBM Plex Mono|Source Code Pro|Space Mono|Roboto Mono|Azeret Mono|Geist Mono|Trispace)/i;
+
+  const fallback = monoHint.test(name) ? "monospace" : (serifHint.test(name) ? "serif" : "sans-serif");
+  return `${quoted}, ${fallback}`;
+}
+
+/* ---------------- DOM + UI logic ---------------- */
 
 const commonFontEl = document.getElementById("commonFont");
 const themeFontEl  = document.getElementById("themeFont");
 const mailFontEl   = document.getElementById("mailFont");
+
 const fontSizeEl   = document.getElementById("fontSize");
 const fontColorEl  = document.getElementById("fontColor");
 const textInputEl  = document.getElementById("textInput");
+
 const previewEl    = document.getElementById("preview");
 const activeSrcEl  = document.getElementById("activeSource");
+const selectedLblEl= document.getElementById("selectedLabel");
 const appliedFontEl= document.getElementById("appliedFont");
+
+function fillSelect(el, list) {
+  el.innerHTML = `<option value="">— None —</option>`;
+  list.forEach(label => {
+    const opt = document.createElement("option");
+    opt.value = label;          // store the label, not CSS
+    opt.textContent = label;    // show label as provided
+    el.appendChild(opt);
+  });
+}
 
 fillSelect(commonFontEl, COMMON_FONTS);
 fillSelect(themeFontEl, THEME_FONTS);
 fillSelect(mailFontEl, MAIL_FONTS);
 
-/* -------- CORE LOGIC -------- */
-
-function resetOthers(active) {
-  if(active !== commonFontEl) commonFontEl.value = "";
-  if(active !== themeFontEl)  themeFontEl.value = "";
-  if(active !== mailFontEl)   mailFontEl.value = "";
+function resetOthers(activeEl) {
+  if (activeEl !== commonFontEl) commonFontEl.value = "";
+  if (activeEl !== themeFontEl) themeFontEl.value = "";
+  if (activeEl !== mailFontEl)  mailFontEl.value = "";
 }
 
-function applyFont(source, value){
-  previewEl.style.fontFamily = value || "sans-serif";
+async function applySelection(sourceName, labelValue) {
+  activeSrcEl.textContent = sourceName;
+  selectedLblEl.textContent = labelValue || "—";
+
+  // Load external font if possible (Google Fonts) BEFORE applying (best effort)
+  if (labelValue) {
+    await ensureGoogleFontLoaded(labelValue);
+  } else {
+    document.getElementById("fontLoadStatus").textContent = "—";
+  }
+
+  const fontFamily = labelValue ? cssFontStack(labelValue) : "sans-serif";
+
+  previewEl.style.fontFamily = fontFamily;
   previewEl.style.fontSize = fontSizeEl.value + "px";
   previewEl.style.color = fontColorEl.value;
   previewEl.textContent = textInputEl.value;
-  activeSrcEl.textContent = source;
+
   appliedFontEl.textContent = getComputedStyle(previewEl).fontFamily;
 }
 
-/* -------- EVENTS -------- */
-
-commonFontEl.addEventListener("input", () => {
+commonFontEl.addEventListener("input", async () => {
   resetOthers(commonFontEl);
-  applyFont("Common font", commonFontEl.value);
+  await applySelection("Common font", commonFontEl.value);
 });
 
-themeFontEl.addEventListener("input", () => {
+themeFontEl.addEventListener("input", async () => {
   resetOthers(themeFontEl);
-  applyFont("Theme font", themeFontEl.value);
+  await applySelection("Theme font", themeFontEl.value);
 });
 
-mailFontEl.addEventListener("input", () => {
+mailFontEl.addEventListener("input", async () => {
   resetOthers(mailFontEl);
-  applyFont("Mail font", mailFontEl.value);
+  await applySelection("Mail font", mailFontEl.value);
 });
 
-[fontSizeEl, fontColorEl, textInputEl]
-  .forEach(el => el.addEventListener("input", () =>
-    applyFont(activeSrcEl.textContent || "Common font",
-      commonFontEl.value || themeFontEl.value || mailFontEl.value)
-  ));
+[fontSizeEl, fontColorEl, textInputEl].forEach(el => {
+  el.addEventListener("input", async () => {
+    const activeLabel = commonFontEl.value || themeFontEl.value || mailFontEl.value || "";
+    const activeSource = activeSrcEl.textContent || "Common font";
+    await applySelection(activeSource, activeLabel);
+  });
+});
 
-applyFont("Common font", "");
+// Initial state
+applySelection("Common font", "");
 </script>
 </body>
 </html>
