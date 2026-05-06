@@ -150,6 +150,21 @@
     <em>When you select one dropdown, the other two are reset.</em>
   </div>
 
+  <label>Sample text</label>
+  <textarea id="textInput">
+The quick brown fox jumps over the lazy dog.
+0123456789
+Typography test
+  </textarea>
+
+  <div id="preview" class="preview"></div>
+
+  <div class="status">
+    Active source: <span id="activeSource" class="badge"></span><br>
+    Applied font-family: <span id="appliedFont"></span>
+  </div>
+</div>
+  
   <label>Common font</label>
   <select id="commonFont"></select>
 
@@ -170,20 +185,7 @@
     </div>
   </div>
 
-  <label>Sample text</label>
-  <textarea id="textInput">
-The quick brown fox jumps over the lazy dog.
-0123456789
-Typography test
-  </textarea>
 
-  <div id="preview" class="preview"></div>
-
-  <div class="status">
-    Active source: <span id="activeSource" class="badge"></span><br>
-    Applied font-family: <span id="appliedFont"></span>
-  </div>
-</div>
 
 <script>
 /* === FONT LISTS (EXACT) === */
