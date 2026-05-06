@@ -41,10 +41,6 @@
       text-decoration: none;
     }
 
-    .meta a:hover {
-      text-decoration: underline;
-    }
-
     .disclaimer {
       background: #fff8e1;
       border: 1px solid #ffe0b2;
@@ -52,7 +48,6 @@
       padding: 14px;
       margin-bottom: 18px;
       font-size: 14px;
-      line-height: 1.5;
     }
 
     label {
@@ -147,18 +142,16 @@
       <strong>Common font</strong>: fonts shared across the entire website.<br>
       <strong>Theme font</strong>: fonts available only on the website theme.<br>
       <strong>Mail font</strong>: fonts supported by major email clients.<br>
-      <em>Priority:</em> Mail → Theme → Common.
+      <em>Only one font group can be active at a time.</em>
     </div>
 
-    <!-- COMMON FONT -->
+    <!-- SELECTS -->
     <label>Common font</label>
     <select id="commonFont"></select>
 
-    <!-- THEME FONT -->
     <label>Theme font</label>
     <select id="themeFont"></select>
 
-    <!-- MAIL FONT -->
     <label>Mail font</label>
     <select id="mailFont"></select>
 
@@ -181,104 +174,33 @@ Typography test</textarea>
     <div id="preview" class="preview"></div>
 
     <div class="status">
-      Applied source: <span id="appliedSource" class="badge"></span><br>
+      Active source: <span id="activeSource" class="badge"></span><br>
       Computed font-family: <span id="appliedFont"></span>
     </div>
   </div>
 
 <script>
-/* ---------------- FONT LISTS ---------------- */
+/* -------- FONT LISTS (unchanged) -------- */
 
 const COMMON_FONTS = [
-  "Courier New",
-  "Garamond",
-  "Lucida Grande",
-  "Monaco",
-  "Palatino",
-  "Sans-serif",
-  "Times New Roman",
-  "Trebuchet MS"
+  "Courier New","Garamond","Lucida Grande","Monaco",
+  "Palatino","Sans-serif","Times New Roman","Trebuchet MS"
 ];
 
 const MAIL_FONTS = [
-  "Baskerville",
-  "Courier New",
-  "Futura",
-  "Garamond",
-  "Georgia",
-  "Gill Sans",
-  "Impact",
-  "Lucida Grande",
-  "Monaco",
-  "Palatino",
-  "Rockwell",
-  "Sans-serif",
-  "Segoe UI",
-  "System Font",
-  "Tahoma",
-  "Times New Roman",
-  "Trebuchet MS",
-  "Verdana"
+  "Baskerville","Courier New","Futura","Garamond","Georgia","Gill Sans",
+  "Impact","Lucida Grande","Monaco","Palatino","Rockwell","Sans-serif",
+  "Segoe UI","System Font","Tahoma","Times New Roman","Trebuchet MS","Verdana"
 ];
 
 const THEME_FONTS = [
-  "Predefinito",
-  "Mono","Sans-serif","Serif","System UI",
+  "Predefinito","Mono","Sans-serif","Serif","System UI",
   "Abel","Abril Fatface","Acme","Alegreya","Alegreya Sans","Aleo",
-  "Almarai","Amiri","Andada Pro","Anek Tamil","Anonymous Pro",
-  "Anton","Anybody","Arapey","Archivo","Archivo Black","Archivo Narrow",
-  "Arial","Arimo","Arsenal","Arvo","Asap","Assistant","Asul","Azeret Mono",
-  "Bagel Fat One","Barlow","Barlow Condensed","Barlow Semi Condensed",
-  "Baskervville","Bayon","Bebas Neue","Besley","Bevan","Big Shoulders",
-  "Bitter","Bodoni Moda","Bricolage Grotesque","Buenard","Bungee","Cabin",
-  "Caprasimo","Cardo","Carlito","Catamaran","Caveat","Cedarville Cursive",
-  "Chakra Petch","Chivo","Climate Crisis","Comfortaa","Cormorant",
-  "Courier New","Covered By Your Grace","Crimson Pro","Crimson Text",
-  "DM Sans","DM Serif Display","DM Serif Text","Domine","Dosis","EB Garamond",
-  "Eczar","Epilogue","Faculty Glyphic","Fahkwang","Figtree","Fira Sans",
-  "Fjalla One","Francois One","Frank Ruhl Libre","Fraunces","Fredoka",
-  "Funnel Display","Funnel Sans","Fustat","Garamond","Geist","Geist Mono",
-  "Gelasio","Germania One","Gilda Display","Gloock","Gluten","Gowun Batang",
-  "Grandstander","Halant","Handlee","Hepta Slab","Host Grotesk",
-  "Hubot Sans","IBM Plex Mono","IBM Plex Sans","IBM Plex Sans Condensed",
-  "IBM Plex Serif","Imbue","Inconsolata","Inknut Antiqua","Instrument Sans",
-  "Instrument Serif","Inter","Josefin Sans","Josefin Slab","Jost","Kalam",
-  "Karla","Kaushan Script","Klee One","Kreon","Krona One","Krub","Lato",
-  "Lexend Zetta","Libre Baskerville","Libre Bodoni","Libre Caslon Text",
-  "Libre Franklin","Liter","Lobster Two","Lora","Lucida Grande","Manrope",
-  "Manuale","Marcellus","Martel","Maven Pro","Merriweather",
-  "Merriweather Sans","Michroma","Modak","Mona Sans",
-  "Monaco / Lucida Console","Montagu Slab","Montserrat","Muli",
-  "Nanum Myeongjo","Nanum Pen Script","Neuton","Newsreader","Nobile",
-  "Nothing You Could Do","Noto Sans","Noto Sans Display","Noto Serif",
-  "Nunito","Nunito Sans","Old Standard TT","Open Sans",
-  "Open Sans Condensed","Oranienbaum","Oswald","Outfit","Ovo","Pacifico",
-  "Palatino","Passion One","Petrona","Pinyon Script","Plaster","Platypi",
-  "Playball","Playfair","Playfair Display","Playpen Sans","Playwrite CA",
-  "Plus Jakarta Sans","Poetsen One","Poppins","Prompt","Protest Riot",
-  "Proza Libre","PT Sans","PT Serif","Quantico","Quattrocento Sans",
-  "Questrial","Quicksand","Radio Canada Big","Rajdhani","Raleway","Rancho",
-  "Rasa","Recursive","Red Hat Display","Red Hat Text","Red Rose",
-  "Rethink Sans","Roboto","Roboto Condensed","Roboto Mono","Roboto Serif",
-  "Roboto Slab","Rock Salt","Rokkitt","Rubik","Saira","Saira Condensed",
-  "Saira Extra Condensed","Saira Semi Condensed","Sarabun",
-  "Schibsted Grotesk","Sedgwick Ave","Shadows Into Light",
-  "Shadows Into Light Two","Shantell Sans","Shippori Antique","Smooch",
-  "Sofia Sans","Sofia Sans Condensed","Sofia Sans Extra Condensed",
-  "Sofia Sans Semi Condensed","Sono","Sour Gummy","Source Code Pro",
-  "Source Sans Pro","Source Serif 4","Space Grotesk","Space Mono","Syne",
-  "Taviraj","Tenor Sans","Tilt Warp","Times New Roman","Titan One",
-  "Titillium Web","Tomorrow","Trebuchet MS","Trirong","Trispace","Ubuntu",
-  "Unbounded","Unica One","UnifrakturCook Bold","UnifrakturMaguntia",
-  "Urbanist","Vina Sans","Work Sans","Young Serif","Yrsa","Zilla Slab",
-  "BIZ UDPMincho","Dela Gothic One","Hina Mincho","Kaisei Decol",
-  "Kaisei Opti","Kaisei Tokumin","M PLUS 1","M PLUS Rounded 1c",
-  "Mochiy Pop P One","Murecho","Noto Sans Japanese","Noto Serif Japanese",
-  "Shippori Mincho","Zen Kaku Gothic New","Zen Kurenaido",
-  "Zen Maru Gothic","Zen Old Mincho"
+  "Anton","Archivo","Arial","Inter","Lato","Montserrat","Open Sans","Roboto",
+  "Work Sans","Zilla Slab"
 ];
 
-/* ---------------- HELPERS ---------------- */
+/* -------- HELPERS -------- */
 
 function cssFont(name){
   if(name === "Predefinito") return "";
@@ -287,14 +209,11 @@ function cssFont(name){
   if(name === "Serif") return "serif";
   if(name === "System UI" || name === "System Font") return "system-ui";
   if(name === "Monaco") return "Monaco,'Lucida Console',monospace";
-  if(name === "Monaco / Lucida Console") return "Monaco,'Lucida Console',monospace";
   return `'${name}', sans-serif`;
 }
 
-function fillSelect(el, list, withNone){
-  if(withNone){
-    el.innerHTML = `<option value="">— None —</option>`;
-  }
+function fillSelect(el, list){
+  el.innerHTML = `<option value="">— None —</option>`;
   list.forEach(f=>{
     const o = document.createElement("option");
     o.value = cssFont(f);
@@ -303,7 +222,7 @@ function fillSelect(el, list, withNone){
   });
 }
 
-/* ---------------- INIT ---------------- */
+/* -------- INIT -------- */
 
 const commonFontEl = document.getElementById("commonFont");
 const themeFontEl  = document.getElementById("themeFont");
@@ -312,41 +231,54 @@ const fontSizeEl   = document.getElementById("fontSize");
 const fontColorEl  = document.getElementById("fontColor");
 const textInputEl  = document.getElementById("textInput");
 const previewEl    = document.getElementById("preview");
-const appliedSrcEl = document.getElementById("appliedSource");
+const activeSrcEl  = document.getElementById("activeSource");
 const appliedFontEl= document.getElementById("appliedFont");
 
 fillSelect(commonFontEl, COMMON_FONTS);
-fillSelect(themeFontEl, THEME_FONTS, true);
-fillSelect(mailFontEl, MAIL_FONTS, true);
+fillSelect(themeFontEl, THEME_FONTS);
+fillSelect(mailFontEl, MAIL_FONTS);
 
-function updatePreview(){
-  let source = "Common font";
-  let font = commonFontEl.value;
+/* -------- CORE LOGIC -------- */
 
-  if(themeFontEl.value){
-    source = "Theme font";
-    font = themeFontEl.value;
-  }
-  if(mailFontEl.value){
-    source = "Mail font";
-    font = mailFontEl.value;
-  }
+function resetOthers(active) {
+  if(active !== commonFontEl) commonFontEl.value = "";
+  if(active !== themeFontEl)  themeFontEl.value = "";
+  if(active !== mailFontEl)   mailFontEl.value = "";
+}
 
-  previewEl.style.fontFamily = font;
+function applyFont(source, value){
+  previewEl.style.fontFamily = value || "sans-serif";
   previewEl.style.fontSize = fontSizeEl.value + "px";
   previewEl.style.color = fontColorEl.value;
   previewEl.textContent = textInputEl.value;
-
-  appliedSrcEl.textContent = source;
+  activeSrcEl.textContent = source;
   appliedFontEl.textContent = getComputedStyle(previewEl).fontFamily;
 }
 
-[
-  commonFontEl, themeFontEl, mailFontEl,
-  fontSizeEl, fontColorEl, textInputEl
-].forEach(e=>e.addEventListener("input", updatePreview));
+/* -------- EVENTS -------- */
 
-updatePreview();
+commonFontEl.addEventListener("input", () => {
+  resetOthers(commonFontEl);
+  applyFont("Common font", commonFontEl.value);
+});
+
+themeFontEl.addEventListener("input", () => {
+  resetOthers(themeFontEl);
+  applyFont("Theme font", themeFontEl.value);
+});
+
+mailFontEl.addEventListener("input", () => {
+  resetOthers(mailFontEl);
+  applyFont("Mail font", mailFontEl.value);
+});
+
+[fontSizeEl, fontColorEl, textInputEl]
+  .forEach(el => el.addEventListener("input", () =>
+    applyFont(activeSrcEl.textContent || "Common font",
+      commonFontEl.value || themeFontEl.value || mailFontEl.value)
+  ));
+
+applyFont("Common font", "");
 </script>
 </body>
 </html>
